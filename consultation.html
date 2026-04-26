@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="icon" href="logos/oakwell-logo.png"
+<link rel="icon" href="logos/oakwell-logo.png"/>
 <title>Book a Consultation — Oakwell & Finch Attorneys</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -790,6 +790,79 @@
     font-size: 13.5px; line-height: 1.8; color: var(--text-muted);
     font-weight: 300; margin-bottom: 40px; max-width: 540px;
   }
+
+  /* ─────────────────────────────────────────
+     RESPONSIVE — MOBILE & TABLET
+  ───────────────────────────────────────── */
+
+  /* Tablet (≤ 1024px) */
+  @media (max-width: 1024px) {
+    nav { padding: 18px 28px; }
+    .consult-hero { padding: 120px 28px 56px; }
+    .steps-bar { padding: 0 28px; }
+    .step-tab { padding: 18px 20px 18px 0; margin-right: 20px; }
+    .main-wrap { padding: 44px 28px 80px; gap: 40px; grid-template-columns: 1fr 280px; }
+  }
+
+  /* Mobile (≤ 768px) */
+  @media (max-width: 768px) {
+    nav { padding: 14px 18px; }
+    .nav-links { display: none; }
+    .nav-btn { padding: 10px 16px; font-size: 10px; }
+
+    .consult-hero { padding: 100px 18px 44px; }
+    .hero-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .hero-title { font-size: clamp(30px, 7vw, 46px); }
+    .hero-sub { max-width: 100%; font-size: 13px; }
+
+    .steps-bar { padding: 0 18px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .steps-inner { gap: 0; min-width: max-content; }
+    .step-tab { padding: 16px 16px 16px 0; margin-right: 12px; }
+    .step-label { font-size: 10px; }
+
+    .main-wrap {
+      padding: 32px 18px 64px;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .sidebar { display: none; }
+    .main-wrap.success-active { padding: 32px 18px 64px; }
+
+    .panel-title { font-size: clamp(24px, 6vw, 34px); }
+    .panel-sub { font-size: 13px; margin-bottom: 28px; }
+
+    .time-slots { grid-template-columns: repeat(3, 1fr); }
+    .format-options { grid-template-columns: 1fr; }
+
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    .form-check { grid-column: 1; }
+
+    .success-detail { flex-wrap: wrap; gap: 0; padding: 16px 20px; }
+    .sd-item { min-width: 50%; padding: 12px 0; }
+    .confirm-details-block { padding: 20px; }
+    .success-title { font-size: clamp(26px, 6vw, 38px); }
+    .success-panel { padding: 48px 20px; }
+
+    footer { padding: 24px 18px; flex-direction: column; gap: 12px; text-align: center; }
+    .footer-links-row { justify-content: center; flex-wrap: wrap; gap: 16px; }
+  }
+
+  /* Small mobile (≤ 480px) */
+  @media (max-width: 480px) {
+    .consult-hero { padding: 88px 16px 36px; }
+    .main-wrap { padding: 24px 16px 56px; }
+    .steps-bar { padding: 0 16px; }
+    .time-slots { grid-template-columns: repeat(2, 1fr); }
+    .sd-item { min-width: 100%; }
+    .panel-footer {
+      flex-direction: column-reverse;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .btn-next, .btn-submit { text-align: center; width: 100%; }
+    .btn-back { justify-content: center; }
+  }
 </style>
 </head>
 <body>
@@ -1079,7 +1152,6 @@
 
   // ─── TIME SLOTS ───
   const allSlots = ['08:30','09:00','09:30','10:00','10:30','11:00','14:00','14:30','15:00','15:30','16:00'];
-  // Randomly mark some as unavailable for realism
   function getSlotsForDate(date) {
     const seed = date.getDate() + date.getMonth() * 31;
     return allSlots.map((t, i) => ({ time: t, available: (seed + i * 7) % 3 !== 0 }));
@@ -1093,7 +1165,6 @@
     document.getElementById('cal-month-label').textContent = `${months[currentMonth]} ${currentYear}`;
 
     const grid = document.getElementById('cal-grid');
-    // Remove old day cells
     const existing = grid.querySelectorAll('.cal-day');
     existing.forEach(e => e.remove());
 
@@ -1101,7 +1172,6 @@
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const today = new Date(); today.setHours(0,0,0,0);
 
-    // Empty cells
     for (let i = 0; i < firstDay; i++) {
       const el = document.createElement('div');
       el.className = 'cal-day empty';
@@ -1122,7 +1192,6 @@
       else if (avail) el.classList.add('available');
       if (isToday) el.classList.add('today');
 
-      // Re-apply selected state
       if (state.selectedDate) {
         const sd = state.selectedDate;
         if (sd.getFullYear() === currentYear && sd.getMonth() === currentMonth && sd.getDate() === d) {
@@ -1138,18 +1207,15 @@
   }
 
   function selectDate(date, el) {
-    // Clear previous selection
     document.querySelectorAll('.cal-day.selected').forEach(e => e.classList.remove('selected'));
     el.classList.add('selected');
     state.selectedDate = date;
     state.selectedTime = null;
 
-    // Update date label
     const label = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
     document.getElementById('selected-date-label').textContent = label;
     state.selectedTime = null;
     state.selectedFormat = null;
-    // Hide format section until time re-selected
     document.getElementById('format-section').style.display = 'none';
     document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
 
@@ -1180,9 +1246,7 @@
     el.classList.add('selected');
     state.selectedTime = time;
     state.selectedFormat = null;
-    // Show format selector
     document.getElementById('format-section').style.display = 'block';
-    // Reset format selection UI
     document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
     document.getElementById('btn-step2').disabled = true;
   }
@@ -1223,7 +1287,6 @@
       return;
     }
 
-    // Show success
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.step-tab').forEach(t => { t.classList.remove('active'); t.classList.add('done'); });
     document.getElementById('success-panel').classList.add('active');
@@ -1234,7 +1297,6 @@
     document.getElementById('confirm-time').textContent = state.selectedTime;
     document.getElementById('confirm-format').textContent = state.selectedFormat;
 
-    // Populate client details
     document.getElementById('confirm-name').textContent = `${first} ${last}`;
     document.getElementById('confirm-email').textContent = email;
     document.getElementById('confirm-phone').textContent = phone;
